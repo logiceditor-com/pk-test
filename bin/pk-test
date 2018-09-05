@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -euo pipefail
+
+ROOT="${BASH_SOURCE[0]}";
+if([ -h "${ROOT}" ]) then
+  while([ -h "${ROOT}" ]) do ROOT=$(readlink "${ROOT}"); done
+fi
+ROOT=$(cd $(dirname "${ROOT}")/../ && pwd)
+
+if luarocks show "pk-test" 2>/dev/null; then
+  NAME="pk-test"
+else
+  NAME="pk-test-lite"
+fi
+
+MODULE="pk-test/run"
+
+if [ "${1:-}" = "--rockless" ]; then
+    shift
+    ROCK_DIR="$(dirname $0)/../"
+else
+    ROCK_DIR="$(luarocks show --rock-dir ${NAME})"
+fi
+PRIVATE_MODULES_PATH="${ROCK_DIR}/?.lua"
+
+WORKDIR="$(pwd)"
+while [ ! -d "${WORKDIR}/test/cases" -a ! "${WORKDIR}" = "/" ]; do
+    WORKDIR="$(dirname $WORKDIR)"
+done
+if [ "${WORKDIR}" = "/" ] && ! [ "${1:-}" = "--help" ]; then
+    echo "${NAME}: test/cases not found" >&2
+    exit 1
+fi
+
+TEST_CASES_PATH="${WORKDIR}/test/cases"
+# NOTE! PRIVATE_MODULES_PATH is changed here because tests must work with local code
+#       rather than installed one. Be careful with copy-paste!
+PRIVATE_MODULES_PATH="${WORKDIR}/?.lua;${WORKDIR}/src/lua/?.lua;${PRIVATE_MODULES_PATH}"
+
+exec le-call-lua-module \
+  "${PRIVATE_MODULES_PATH}" \
+  "${MODULE}" \
+  "run" \
+  "--root=${ROOT}" \
+  "--test-cases-path=${TEST_CASES_PATH}" \
+  "$@"
