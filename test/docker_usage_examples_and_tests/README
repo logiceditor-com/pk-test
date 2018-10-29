@@ -1,0 +1,19 @@
+usage/tests:
+  lua usage_example1.lua
+  lua usage_example2.lua
+  lua usage_example3.lua
+
+directory contents descr:
+  docker_tests - directories with configs for docker-compose
+  usage_example[1-3].lua - tests/usage_examples
+
+usage examples depends on:
+  docker.lua module
+  lua-socket module
+
+tested on:
+  ubuntu 16 amd64
+  Docker version 17.05.0-ce, build 89658be
+  docker-compose version 1.8.0, build unknown
+  Lua 5.1.5  Copyright (C) 1994-2012 Lua.org, PUC-Rio
+
