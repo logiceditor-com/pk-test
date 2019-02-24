@@ -98,10 +98,10 @@ local start_container_safe = function()
     local err = res
     pcall(log_cwd)
     pcall(
-        log_error,
-        'call of shell_exec("docker-compose up -d") is crashed:',
-        err
-      )
+      log_error,
+      'call of shell_exec("docker-compose up -d") is crashed:',
+      err
+    )
     return false
   end
 
@@ -121,10 +121,10 @@ local stop_container_safe = function()
     local err = res
     pcall(log_cwd)
     pcall(
-        log_error,
-        'call of shell_exec("docker-compose down") is crashed',
-        err
-      )
+      log_error,
+      'call of shell_exec("docker-compose down") is crashed',
+      err
+    )
     return false
   end
 
@@ -156,16 +156,16 @@ end
 -- @return true on success
 local do_with_docker = function (cfg_dir, handler)
   arguments(
-      'string', cfg_dir,
-      'function', handler
-    )
+    'string', cfg_dir,
+    'function', handler
+  )
 
   log(
-      'do_with_docker() is called with arguments: dir=',
-      cfg_dir,
-      'handler=',
-      handler
-    )
+    'do_with_docker() is called with arguments: dir=',
+    cfg_dir,
+    'handler=',
+    handler
+  )
 
   -- it is not a static variable. functions below
   -- was written to avoid deeply nested ugly 'if' blocks,
